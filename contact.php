@@ -1,1 +1,1 @@
-<script> window.location="https://kresno.github.io/testdulu";</scrip>
+<script> alert("Terimakasih telah menghubungi kami, pesan akan kami balas secepatnya") && window.location="https://kresno.github.io/testdulu";</script>
