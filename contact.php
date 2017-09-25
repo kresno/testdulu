@@ -1,47 +1,42 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: LENOVO
- * Date: 9/24/2017
- * Time: 11:39 PM
- */
-$admin_email = "kresno.19@gmail.com";
-$email =$_POST['email'];
-$subject = $_POST['subject'];
-$comments = $_POST['comments'];
+// Import PHPMailer classes into the global namespace
+// These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-//sendemail
+//Load composer's autoloader
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
 
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL); date_default_timezone_set('Etc/UTC');
-    /*autoload phpmailer*/ require 'PHPMailer/class.phpmailer.php';
-    $mail = new PHPMailer; $mail->isSMTP();
+$mail = new PHPMailer(true);                              // Passing `true` enables exceptions
 
-/*dipakai debugging,
- * 0 = off (for production use)
- * 1 = client messages
- * 2 = client and server messages
- * */
-$mail->SMTPDebug = 2;
-$mail->Debugoutput = 'html';
-$mail->Host = 'smtp.gmail.com';
-/**jika kebetulan network SMTP di block lewat IPv6 maka gunakan kode ini
- * $mail->Host = gethostbyname('smtp.gmail.com');
- * */
-$mail->Port = 587; //ini adalah port default mbah google
-$mail->SMTPSecure = 'tls'; //security pakai ssl atau tls, tapi ssl telah deprecated
-$mail->SMTPAuth = true; //menandakan butuh authentifikasi
-$mail->Username = $admin_email;//email anda
-$mail->Password = "akun google"; //password anda, silakan diganti
-$mail->setFrom($email);
-$mail->addAddress($admin_email);
-$mail->Subject = 'Email Buat Test Doang';
-$mail->msgHTML($comments, "");
-$mail->AltBody = 'Ini Pesan yang Plain Text Beb';
-if (!$mail->send()) {
-    echo "Ada Yang Error Gan: " . $mail->ErrorInfo;
-} else {
-    echo "Berhasil di Send!";
+try {
+    //Server settings
+    $mail->SMTPDebug = 2;                                   // Enable verbose debug output
+    $mail->isSMTP();                                        // Set mailer to use SMTP
+    $mail->Host = 'smtp.gmail.com';                        // Specify main and backup SMTP servers
+    $mail->SMTPAuth = true;                                 // Enable SMTP authentication
+    $mail->Username = 'kresno.09@gmail.com';           // SMTP username
+    $mail->Password = 'pass8080word';                       // SMTP password
+    $mail->SMTPSecure = 'tls';                              // Enable TLS encryption, `ssl` also accepted
+    $mail->Port = 587;                                      // TCP port to connect to
+
+    //Recipients
+    $mail->setFrom('kresno.09@gmail.com', 'Mailer');
+    $mail->addAddress('kresno.19@gmail.com', 'Joe User');     // Add a recipient
+    $mail->addReplyTo('kresno.09@gmail.com', 'Information');
+
+    //Content
+    $mail->isHTML(true);                                  // Set email format to HTML
+    $mail->Subject = 'Here is the subject';
+    $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+    $mail->send();
+    echo 'Message has been sent';
+} catch (Exception $e) {
+    echo 'Message could not be sent.';
+    echo 'Mailer Error: ' . $mail->ErrorInfo;
 }
 ?>
